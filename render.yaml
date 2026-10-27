@@ -1,0 +1,50 @@
+# Blueprint Render : base PostgreSQL + backend + 2 frontends (plan gratuit)
+# Mise en place : Dashboard Render > New > Blueprint > choisir ce dépôt.
+
+databases:
+  - name: todolist-db
+    plan: free
+    region: frankfurt
+    databaseName: todolist
+    user: todo_user
+
+services:
+  - type: web
+    name: wildyax-todolist-api
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerContext: ./backend
+    dockerfilePath: ./backend/Dockerfile
+    healthCheckPath: /api/health
+    autoDeployTrigger: checksPass
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: todolist-db
+          property: connectionString
+
+  - type: web
+    name: wildyax-todolist-front-js
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerContext: ./frontend-js
+    dockerfilePath: ./frontend-js/Dockerfile
+    autoDeployTrigger: checksPass
+    envVars:
+      # URL publique du backend (https, sans slash final) = https://<nom du service>.onrender.com
+      - key: BACKEND_URL
+        value: https://wildyax-todolist-api.onrender.com
+
+  - type: web
+    name: wildyax-todolist-front-ts
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerContext: ./frontend-ts
+    dockerfilePath: ./frontend-ts/Dockerfile
+    autoDeployTrigger: checksPass
+    envVars:
+      - key: BACKEND_URL
+        value: https://wildyax-todolist-api.onrender.com
