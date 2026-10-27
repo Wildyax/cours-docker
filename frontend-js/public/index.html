@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Todo List (JS)</title>
+  <link rel="stylesheet" href="style.css">
+  <script>
+    // Appliqué avant le rendu pour éviter un flash de thème
+    document.documentElement.dataset.theme = localStorage.getItem("theme") ||
+      (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  </script>
+</head>
+<body>
+  <main>
+    <header class="header">
+      <h1>Mes tâches <span class="badge">JS</span></h1>
+      <button class="icon-btn" id="theme" type="button" aria-label="Changer de thème">🌙</button>
+    </header>
+
+    <section class="stats" aria-label="Statistiques">
+      <div class="stat"><strong id="stat-total">0</strong><span>Total</span></div>
+      <div class="stat"><strong id="stat-active">0</strong><span>À faire</span></div>
+      <div class="stat"><strong id="stat-done">0</strong><span>Terminées</span></div>
+    </section>
+    <div class="progress" aria-hidden="true"><div id="progress"></div></div>
+
+    <form id="form" class="card add">
+      <div class="add-row">
+        <input class="field" type="text" id="title" placeholder="Que faut-il faire ?" maxlength="200" required autocomplete="off" aria-label="Titre">
+        <button class="btn" type="submit">Ajouter</button>
+      </div>
+      <button class="link-btn" type="button" id="toggle-details" aria-expanded="false">+ Ajouter des détails</button>
+      <div class="details" id="details">
+        <textarea class="field" id="description" placeholder="Description (optionnelle)" maxlength="2000" aria-label="Description"></textarea>
+        <label class="lbl">Priorité
+          <select class="field" id="priority">
+            <option value="low">Basse</option>
+            <option value="medium" selected>Moyenne</option>
+            <option value="high">Haute</option>
+          </select>
+        </label>
+        <label class="lbl">Échéance
+          <input class="field" type="date" id="due">
+        </label>
+      </div>
+    </form>
+
+    <div class="toolbar">
+      <input class="field" type="search" id="search" placeholder="🔍 Rechercher…" aria-label="Rechercher">
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" data-filter="all" aria-selected="true">Toutes</button>
+        <button class="tab" role="tab" data-filter="active" aria-selected="false">À faire</button>
+        <button class="tab" role="tab" data-filter="done" aria-selected="false">Terminées</button>
+      </div>
+    </div>
+
+    <p class="error" id="error" role="alert"></p>
+    <ul id="list"></ul>
+    <div class="empty" id="empty" hidden><div class="big">✨</div><p id="empty-text"></p></div>
+
+    <footer class="footer">
+      <span id="count"></span>
+      <button class="link-btn" id="clear" type="button">Supprimer les terminées</button>
+    </footer>
+  </main>
+
+  <dialog id="edit-dialog">
+    <h2>Modifier la tâche</h2>
+    <form id="edit-form" method="dialog">
+      <input class="field" type="text" id="edit-title" maxlength="200" required aria-label="Titre">
+      <textarea class="field" id="edit-description" rows="4" maxlength="2000" placeholder="Description" aria-label="Description"></textarea>
+      <div class="row">
+        <label class="lbl">Priorité
+          <select class="field" id="edit-priority">
+            <option value="low">Basse</option>
+            <option value="medium">Moyenne</option>
+            <option value="high">Haute</option>
+          </select>
+        </label>
+        <label class="lbl">Échéance
+          <input class="field" type="date" id="edit-due">
+        </label>
+      </div>
+      <div class="buttons">
+        <button class="btn ghost" type="button" id="edit-cancel">Annuler</button>
+        <button class="btn" type="submit">Enregistrer</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
